@@ -1,15 +1,18 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	v1 "suda-backend/internal/api/v1"
 )
 
 func main() {
-	http.HandleFunc("/api/v1/device/cpu_info", v1.GetCPUInfo)
-	http.HandleFunc("/api/v1/device/cpu_detail", v1.GetCpuDetail)
-	http.HandleFunc("/api/v1/device/ram_info", v1.GetRam)
-	http.HandleFunc("/api/v1/device/swap_info", v1.GetSwapInfo)
+	mux := http.NewServeMux()
 
-	http.ListenAndServe(":8080", nil)
+	v1.RegisterRoutes(mux)
+
+	log.Println("Server started on :8080")
+	if err := http.ListenAndServe(":8080", mux); err != nil {
+		log.Fatal(err)
+	}
 }
